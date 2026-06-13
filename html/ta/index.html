@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEF | எங்களின் தாய்மொழி; எங்களின் அடையாளம்</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .hero-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        body { font-family: 'IBM Plex Sans Tamil', sans-serif !important; }
+
+        /* Gallery reel scrollbar */
+        .gallery-reel::-webkit-scrollbar { width: 4px; height: 4px; }
+        .gallery-reel::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); border-radius: 999px; }
+        .gallery-reel::-webkit-scrollbar-thumb { background: rgba(96,165,250,0.55); border-radius: 999px; }
+        .gallery-reel::-webkit-scrollbar-thumb:hover { background: rgba(96,165,250,0.85); }
+        .gallery-reel { scrollbar-width: thin; scrollbar-color: rgba(96,165,250,0.55) rgba(255,255,255,0.08); }
+
+        /* Stats counter animation */
+        @keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .stat-item { animation: countUp 0.6s ease forwards; }
+    </style>
+</head>
+
+<body class="bg-white text-slate-900 font-sans" x-data="{
+    showDonate: false,
+    lang: 'ta',
+
+    activePhoto: { type: 'image', url: '/assets/picture-00.webp', title: 'சமூக தாக்கம்' },
+    activeVideo: { type: 'video', url: 'QwRz5runoVY', title: 'தமிழ்நாடு சட்டப்பேரவையில்' },
+
+    photoItems: [
+        { type: 'image', url: '/assets/picture-00.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-01.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-02.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-03.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-04.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-05.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-06.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-07.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-08.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-09.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-10.webp', title: 'மாணவர் கற்றல்' },
+        { type: 'image', url: '/assets/picture-11.webp', title: 'மாணவர் கற்றல்' }
+    ],
+    videoItems: [
+        { type: 'video', url: 'QwRz5runoVY',   title: 'தமிழ்நாடு சட்டப்பேரவையில்' },
+        { type: 'video', url: 'pU6eEHzCSjE',   title: 'தாய்த்தமிழ் பள்ளி, குன்றத்தூர்' },
+        { type: 'video', url: 'QpQJJkkYC5Y',   title: 'தாய்த்தமிழ் பள்ளி, திருப்பூர்' },
+        { type: 'video', url: 'SE1JnmZYP-w',   title: 'தாய்த்தமிழ் பள்ளி, கோபி' },
+        { type: 'video', url: 'p641bcXTFN0',   title: 'தாய்த்தமிழ் பள்ளி மாணவர்கள் கலைநிகழ்ச்சி' }
+    ],
+
+    initGallery() {
+        this.activePhoto = this.photoItems[0];
+        this.activeVideo = this.videoItems[0];
+
+        const photoReel = this.$refs.photoReel;
+        if (photoReel) {
+            let paused = false;
+            photoReel.addEventListener('mouseenter', () => paused = true);
+            photoReel.addEventListener('mouseleave', () => paused = false);
+            setInterval(() => {
+                if (paused || !photoReel.children.length) return;
+                const maxScroll = photoReel.scrollHeight - photoReel.clientHeight;
+                if (maxScroll <= 0) return;
+                const next = photoReel.scrollTop + 120;
+                photoReel.scrollTo({ top: next >= maxScroll - 4 ? 0 : next, behavior: 'smooth' });
+            }, 3500);
+        }
+    }
+}" x-init="initGallery()">
+
+<!--#include virtual="/parts/nav-ta.html" -->
+
+<!-- SECTION 1: Hero -->
+<header class="relative py-16 md:py-24 flex items-center overflow-hidden bg-slate-900">
+    <div class="absolute inset-0 z-0">
+        <img src="/assets/hero-bg.webp" alt="தாய்த்தமிழ்" class="w-full h-full object-cover opacity-90">
+        <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(15,23,42,0.95) 0%, rgba(30,58,138,0.55) 40%, rgba(30,58,138,0.25) 65%, rgba(30,58,138,0.35) 100%)">        </div>
+    </div>
+    <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
+        <div class="max-w-xl">
+            <h1 class="text-2xl md:text-4xl font-black text-white leading-tight mb-4">
+                நாளைய தலைமுறையை <br> <span class="text-blue-400">வலிமையாக்குவோம்</span>
+            </h1>
+            <p class="text-base md:text-lg text-slate-200 mb-6 font-medium leading-relaxed">
+                உலகெங்கும் ஏற்றுக்கொள்ளப்பட்ட கல்வி அறிவியலான, தாய்மொழியில்தான் கல்வி, என்ற கோட்பாட்டின் வழி, தாய்மொழிக் கல்வியை அனைத்து மாணவர்களுக்கும் வழங்கி, அவர்களுக்கு ஒரு ஒளிமயமான எதிர்காலத்தை உருவாக்க முயல்கிறோம்.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <button @click="showDonate = true" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 transition shadow-lg text-sm">
+                    ஆதரவு தாருங்கள்
+                </button>
+                <a href="#mission" class="border border-white/30 text-white backdrop-blur-sm px-6 py-2.5 rounded-full font-bold hover:bg-white/10 transition text-sm">
+                    எங்கள் இலக்கு
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Branding Banner -->
+<section id="branding" class="hero-gradient text-white py-12 px-6 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+        <h1 class="text-2xl md:text-4xl font-bold leading-tight mb-6 tracking-wide">
+            தங்கள் <span class="text-blue-200">தாய்மொழியில்</span> கல்வி.<br>
+            தங்கள் <span class="text-blue-200">அடையாளத்தில்</span> மேன்மை.
+        </h1>
+    </div>
+</section>
+
+<!-- SECTION 1b: Impact Stats -->
+<section id="stats" class="bg-slate-900 py-10 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+            <div class="stat-item">
+                <p class="text-3xl md:text-4xl font-black text-blue-400">1,700+</p>
+                <p class="text-xs md:text-sm text-slate-400 font-medium mt-1 uppercase tracking-wider">மாணவர்கள்</p>
+            </div>
+            <div class="stat-item" style="animation-delay:0.1s">
+                <p class="text-3xl md:text-4xl font-black text-blue-400">120</p>
+                <p class="text-xs md:text-sm text-slate-400 font-medium mt-1 uppercase tracking-wider">ஆசிரியர்கள்</p>
+            </div>
+            <div class="stat-item" style="animation-delay:0.2s">
+                <p class="text-3xl md:text-4xl font-black text-blue-400">70</p>
+                <p class="text-xs md:text-sm text-slate-400 font-medium mt-1 uppercase tracking-wider">தன்னார்வலர்கள்</p>
+            </div>
+            <div class="stat-item" style="animation-delay:0.3s">
+                <p class="text-3xl md:text-4xl font-black text-blue-400">18</p>
+                <p class="text-xs md:text-sm text-slate-400 font-medium mt-1 uppercase tracking-wider">பள்ளிகள்</p>
+            </div>
+            <div class="stat-item col-span-2 md:col-span-1" style="animation-delay:0.4s">
+                <p class="text-3xl md:text-4xl font-black text-blue-400">35</p>
+                <p class="text-xs md:text-sm text-slate-400 font-medium mt-1 uppercase tracking-wider">ஆண்டுகள் சேவை</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 2: Mission -->
+<section id="mission" class="py-16 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-2xl font-semibold text-blue-900 mb-6">எங்கள் குறிக்கோள்</h2>
+                <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                  பன்னாட்டுக் கல்வி அறக்கட்டளையானது மாணாக்கரின் கல்வி மேம்பாடு, தொடர் கற்றல், வளர்ச்சி ஆகியவற்றுக்குத் தொடர்ந்து பாடுபடும். தாய்மொழிக்கல்வியும், பண்பாட்டு அடையாளமும் மாணாக்கரின் கல்விக்கு அடித்தளம் என்று முழுமையாக நம்புகின்றோம்.
+                </p>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                  மாணாக்கரின் திறனை மேம்படுத்தவும், அதனை வெளிப்படுத்தவும்  தாய்மொழிக் கல்வியை ஊக்குவிக்கின்றோம். அதன் மூலம் சிறப்பான வாய்ப்புகளுக்கும், ஒளிமயமான எதிர்காலத்திற்கும் வழி அமைக்கின்றோம்.
+                </p>
+            </div>
+            <div class="grid gap-4">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 transition">
+                    <h4 class="font-bold text-blue-800 mb-2">அனைவருக்குமான கல்வி</h4>
+                    <p class="text-sm text-slate-500">மழலையர் முதல் 12ஆம் வகுப்பு வரையிலான அனைத்து மாணவர்களுக்கும், தடையற்ற கல்வியை எளிதில் கிடைக்கச் செய்தல்.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 transition">
+                    <h4 class="font-bold text-blue-800 mb-2">பண்பாட்டு அடையாளம்</h4>
+                    <p class="text-sm text-slate-500">தாய்மொழிக் கல்வியின் வலிமையை உணர்ந்து, அதனை மதிப்பதன் மூலம் மாணவர்களின் ஆளுமை மற்றும் அறிவு வளர்ச்சியை மேம்படுத்துதல்.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 transition">
+                    <h4 class="font-bold text-blue-800 mb-2">சமத்துவமான எதிர்காலம்</h4>
+                    <p class="text-sm text-slate-500">நிலைத்த வெற்றிக்கான அடித்தளத்தை அமைத்து, ஒவ்வொரு குழந்தையும் முன்னேறுவதற்கான சரியான வாய்ப்புகளை உறுதி செய்தல்.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 3: Gallery -->
+<section id="gallery" class="py-16 bg-slate-950 text-white">
+    <div class="max-w-6xl mx-auto px-6">
+
+        <div class="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold text-blue-400 mb-1">சமூகப் படங்கள்</h2>
+                <p class="text-slate-400 text-sm">எங்கள் களப்பணியை நேரில் காணுங்கள்.</p>
+            </div>
+            <a href="/ta/gallery.html" class="inline-flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition border border-blue-400/40 hover:border-blue-300/60 px-4 py-2 rounded-full self-start sm:self-auto">
+               முழு தொகுப்பைக் காண்க 
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- ── PHOTOS sub-section ── -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <svg class="w-5 h-5 text-blue-400 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <h3 class="text-lg font-bold text-white tracking-wide">புகைப்படங்கள்</h3>
+                <span class="text-xs text-slate-500 font-medium">(<span x-text="photoItems.length"></span> படங்கள்)</span>
+            </div>
+
+            <div class="flex gap-4 h-[320px] md:h-[380px]">
+                <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
+                    <img :src="activePhoto.url" class="w-full h-full object-cover transition-all duration-500" :alt="activePhoto.title">
+                </div>
+                <div x-ref="photoReel"
+                     class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
+                    <template x-for="item in photoItems" :key="item.url">
+                        <button type="button" @click="activePhoto = item"
+                                class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                :class="activePhoto.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
+                            <img :src="item.url" class="w-full h-full object-cover" :alt="item.title" loading="lazy">
+                        </button>
+                    </template>
+                </div>
+            </div>
+            <p class="mt-3 text-sm text-slate-400 font-medium" x-text="activePhoto.title"></p>
+        </div>
+
+        <!-- ── VIDEOS sub-section ── -->
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <svg class="w-5 h-5 text-blue-400 flex-none" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                </svg>
+                <h3 class="text-lg font-bold text-white tracking-wide">காணொளிகள்</h3>
+                <span class="text-xs text-slate-500 font-medium">(<span x-text="videoItems.length"></span> காணொளிகள்)</span>
+            </div>
+
+            <div class="flex gap-4 h-[320px] md:h-[380px]">
+                <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
+                    <iframe class="w-full h-full"
+                        :src="'https://www.youtube-nocookie.com/embed/' + activeVideo.url + '?rel=0&modestbranding=1'"
+                        :title="activeVideo.title"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
+                    <template x-for="item in videoItems" :key="item.url">
+                        <button type="button" @click="activeVideo = item"
+                                class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
+                                :class="activeVideo.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
+                            <img :src="'https://img.youtube.com/vi/' + item.url + '/mqdefault.jpg'"
+                                 class="w-full h-full object-cover" :alt="item.title" loading="lazy">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <svg class="w-7 h-7 text-white drop-shadow" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </template>
+                </div>
+            </div>
+            <p class="mt-3 text-sm text-slate-400 font-medium" x-text="activeVideo.title"></p>
+        </div>
+
+    </div>
+</section>
+
+<!-- SECTION 4: Contact -->
+<section id="contact" class="py-12 md:py-16 bg-white">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold tracking-tight text-blue-900 mb-2">தொடர்புக்கு</h2>
+            <p class="text-slate-500">எங்கள் தலைமையுடன் தொடர்பு கொள்ளுங்கள்.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-8 items-start">
+
+            <div class="lg:col-span-2 bg-slate-50 border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-blue-900 mb-5">நிறுவன விவரங்கள்</h3>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">அறக்கட்டளையின் பெயர்</p>
+                        <p class="font-bold text-slate-800 leading-snug">பன்னாட்டுக் கல்வி அறக்கட்டளை</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">வரி நிலை</p>
+                        <p class="text-slate-600 leading-relaxed">பிரிவு 501(c)(3) இன் கீழ் லாப நோக்கற்ற, வரி விலக்கு நிறுவனம்</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Federal Tax ID (EIN)</p>
+                        <p class="font-mono font-bold text-blue-600 bg-blue-50 inline-block px-2 py-0.5 rounded-md border border-blue-100 text-sm">32-0103781</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-200">
+                        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">பொது விசாரணைக்கு</p>
+                        <a href="mailto:info@ief-global.org" class="font-bold text-blue-600 hover:text-blue-800 transition break-all">
+                            info@ief-global.org
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3">
+                <h3 class="text-base font-bold text-blue-900 mb-5">நிர்வாகக் குழு இயக்குநர்கள்</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
+                        <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-base mb-3 overflow-hidden">
+                            SS
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-0.5">சரண் சரவணன்</h4>
+                        <p class="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-3">தலைவர்</p>
+                        <a href="mailto:president@ief-global.org" class="text-[11px] text-slate-500 hover:text-blue-600 font-medium break-all block transition">
+                            president@ief-global.org
+                        </a>
+                    </div>
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
+                        <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-base mb-3 overflow-hidden">
+                            <img src="/assets/secretary-hs.webp" alt="சிவகுமார் மணி" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-0.5">சிவகுமார் மணி</h4>
+                        <p class="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-3">செயலாளர்</p>
+                        <a href="mailto:secretary@ief-global.org" class="text-[11px] text-slate-500 hover:text-blue-600 font-medium break-all block transition">
+                            secretary@ief-global.org
+                        </a>
+                    </div>
+                    <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
+                        <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-base mb-3 overflow-hidden">
+                            AJ
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-0.5">அகிலன் ஜெயராமன்</h4>
+                        <p class="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-3">பொருளாளர்</p>
+                        <a href="mailto:treasurer@ief-global.org" class="text-[11px] text-slate-500 hover:text-blue-600 font-medium break-all block transition">
+                            treasurer@ief-global.org
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!--#include virtual="/parts/donate-modal.html" -->
+<!--#include virtual="/parts/footer.html" -->
+
+</body>
+</html>
+

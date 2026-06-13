@@ -1,0 +1,88 @@
+<div x-show="showDonate"
+     x-cloak
+     class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 scale-95"
+     x-transition:enter-end="opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100 scale-100"
+     x-transition:leave-end="opacity-0 scale-95">
+
+    <div @click.away="showDonate = false"
+         class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 relative">
+
+        <button @click="showDonate = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition" aria-label="Close">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <div class="text-center mb-8">
+            <h3 class="text-2xl font-black text-slate-900 mb-2" 
+                x-text="lang === 'en' ? 'Support Our Mission' : 'எங்கள் நோக்கத்திற்கு ஆதரவளியுங்கள்'"></h3>
+            <p class="text-xs text-slate-500 leading-relaxed px-4" 
+               x-text="lang === 'en' ? 'Your contribution directly funds educational initiatives and empowers local communities.' : 'உங்கள் பங்களிப்பு நேரடியாக கல்வி மூலம் சமூகத்தை மேம்படுத்துகிறது.'"></p>
+        </div>
+
+        <div class="space-y-6 text-center flex flex-col items-center justify-center">
+
+            <div class="w-full">
+                <a href="https://donate.stripe.com/dRmbJ0fSo8i58fn4L8dby00"
+                   target="_blank"
+                   class="flex items-center justify-center gap-2 w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition shadow-md active:scale-[0.99]"
+                   title="Donate securely via Stripe Portal">
+                    
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z"/>
+                    </svg>
+                    
+                    <span x-text="lang === 'en' ? 'Donate with Bank ACH or Credit Card'  : 'வங்கி அல்லது கடன் அட்டை மூலம் நன்கொடை அளிக்க'"></span>
+				</a>
+			</div>
+
+            <div class="w-full flex items-center justify-center my-2">
+                <span class="text-xs text-slate-900 uppercase tracking-widest font-black">— OR Pay with Zelle —</span>
+            </div>
+
+            <div x-data="{ 
+                     zelleEmail: 'triangle.ief@gmail.com', 
+                     orgName: 'International Educational Foundation Inc',
+                     get zelleLink() {
+                         const payload = JSON.stringify({ token: this.zelleEmail, name: this.orgName, action: 'payment' });
+                         return 'https://enroll.zellepay.com/qr-codes?data=' + encodeURIComponent(btoa(payload));
+                     }
+                 }" 
+                 class="w-full bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col items-center justify-center text-center">
+                
+                <div class="flex justify-center mb-3">
+                    <a :href="zelleLink" 
+                       target="_blank" 
+                       class="cursor-pointer transition duration-200 hover:scale-[1.02] active:scale-95 inline-block"
+                       title="Click to execute your Zelle payment">
+                        <img src="/assets/zelle-qr.webp" alt="Scan or Click to Donate" class="w-40 h-40 rounded-xl shadow-inner border-4 border-white mx-auto">
+                    </a>
+                </div>
+                
+                <p class="text-[11px] text-slate-500 text-center max-w-[280px] mx-auto leading-relaxed mb-4"
+                   x-text="lang === 'en' ? 'Scan the QR code within your banking app, or click/tap the image directly from your screen to launch your secure checkout flow.' : 'உங்கள் வங்கி செயலியில் உள்ள QR குறியீட்டை ஸ்கேன் செய்யவும், அல்லது நேரடியாக செலுத்த படத்தின் மீது கிளிக் செய்யவும்.'">
+                </p>
+
+                <div class="w-full border-t border-slate-200/60 pt-4 flex flex-col items-center justify-center">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1"
+                       x-text="lang === 'en' ? 'Zelle Registered Email Identifier' : 'Zelle பதிவுசெய்யப்பட்ட மின்னஞ்சல் முகவரி'"></p>
+                    <span class="text-xs font-mono font-bold text-slate-700 block mb-4 select-all" x-text="zelleEmail"></span>
+
+                    <a :href="zelleLink" 
+                       target="_blank" 
+                       class="inline-flex items-center justify-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-bold underline decoration-2 underline-offset-4 transition py-1"
+                       title="Redirect to Bank Portal">
+                        <span x-text="lang === 'en' ? 'Launch Secure Zelle Flow' : 'Zelle போர்ட்டலைத் திறக்கவும்'"></span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                </div>
+
+            </div> </div> </div>
+</div>
+
