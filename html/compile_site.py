@@ -4,8 +4,8 @@ import re
 import shutil
 
 # Explicit paths mapping across your NVMe SSD and 1TB HDD storage
-source_dir = os.path.expanduser("~/docker/ief-dev/html")
-build_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dist")
+source_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(os.path.dirname(source_dir), "dist")
 assets_src = "/mnt/data/web/ief-media"  # Points directly to your HDD media vault
 assets_dst = os.path.join(build_dir, "assets")
 
