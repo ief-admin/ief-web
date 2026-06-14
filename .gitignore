@@ -233,3 +233,7 @@ out/
 
 # Logs
 *.log
+
+# Tailscale runtime state (machine-specific, contains private keys)
+ts-state/
+
