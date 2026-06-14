@@ -1,0 +1,7 @@
+# wrangler.toml — IEF Web Project
+# Cloudflare Pages configuration for ief-global.org
+# Source of truth for deployment — do not edit matching fields in the Cloudflare dashboard.
+
+name                   = "ief-site"
+pages_build_output_dir = "./dist"           # output of html/compile_site.py
+compatibility_date     = "2026-05-20"

@@ -1,0 +1,38 @@
+<nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+        <a href="/ta" class="flex items-center gap-2 group">
+            <img src="/assets/logo.webp" alt="IEF Logo" class="h-10 w-auto transition-transform group-hover:scale-105">
+            <span class="text-sm md:text-base font-bold tracking-tight text-blue-900">தாய்மொழியில் கல்வி</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8" x-data="{ activeSection: window.location.hash || '#home' }">
+            <a href="/ta/index.html"
+               @click="activeSection = '#home'"
+               :class="(activeSection === '#home' || activeSection === '') ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
+               class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">முகப்பு</a>
+
+            <a href="/ta/index.html#mission"
+               @click="activeSection = '#mission'"
+               :class="activeSection === '#mission' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
+               class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">எங்கள் இலக்கு</a>
+
+            <a href="/ta/index.html#gallery"
+               @click="activeSection = '#gallery'"
+               :class="activeSection === '#gallery' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
+               class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">படங்கள்</a>
+
+            <a href="/ta/index.html#contact"
+               @click="activeSection = '#contact'"
+               :class="activeSection === '#contact' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
+               class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">தொடர்புக்கு</a>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <a href="/en" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition">English</a>
+            <button @click="showDonate = true" class="bg-blue-600 text-white px-5 py-2 rounded-full font-bold text-sm hover:shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-0.5">
+                நன்கொடை
+            </button>
+        </div>
+    </div>
+</nav>
+

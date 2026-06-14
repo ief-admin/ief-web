@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IEF | Loading...</title>
+    <script>
+        // Smart Redirect logic
+        (function() {
+            const userLang = navigator.language || navigator.userLanguage; 
+            // If browser is set to Tamil, go to /ta, else default to English
+            if (userLang.startsWith('ta')) {
+                window.location.href = "/ta/";
+            } else {
+                window.location.href = "/en/";
+            }
+        })();
+    </script>
+</head>
+<body style="background: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <p>Redirecting to International Educational Foundation...</p>
+</body>
+</html>
+

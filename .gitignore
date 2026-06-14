@@ -230,6 +230,14 @@ out/
 
 # VS Code
 .vscode/
+.vscode/settings.json
 
 # Logs
 *.log
+
+# Tailscale runtime state (machine-specific, contains private keys)
+ts-state/
+
+# VSCode workspace settings
+*.code-workspace
+
