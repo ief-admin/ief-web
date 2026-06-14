@@ -5,7 +5,7 @@ import shutil
 
 # Explicit paths mapping across your NVMe SSD and 1TB HDD storage
 source_dir = os.path.expanduser("~/docker/ief-dev/html")
-build_dir = os.path.expanduser("~/ief-static/dist")
+build_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dist")
 assets_src = "/mnt/data/web/ief-media"  # Points directly to your HDD media vault
 assets_dst = os.path.join(build_dir, "assets")
 
@@ -83,7 +83,19 @@ ta_html = process_file(os.path.join(source_dir, "ta", "index.html"))
 with open(os.path.join(build_dir, "ta", "index.html"), "w", encoding="utf-8") as f:
     f.write(ta_html)
 
-# 3. Create Root Redirect File
+# 3. Compile English Gallery page
+print("\nCompiling en/gallery.html...")
+en_gallery_html = process_file(os.path.join(source_dir, "en", "gallery.html"))
+with open(os.path.join(build_dir, "en", "gallery.html"), "w", encoding="utf-8") as f:
+    f.write(en_gallery_html)
+
+# 4. Compile Tamil Gallery page
+print("\nCompiling ta/gallery.html...")
+ta_gallery_html = process_file(os.path.join(source_dir, "ta", "gallery.html"))
+with open(os.path.join(build_dir, "ta", "gallery.html"), "w", encoding="utf-8") as f:
+    f.write(ta_gallery_html)
+
+# 5. Create Root Redirect File
 root_index_content = """<!DOCTYPE html>
 <html>
 <head>
@@ -101,7 +113,7 @@ root_index_content = """<!DOCTYPE html>
 with open(os.path.join(build_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(root_index_content)
 
-# 4. Pull media assets from the 1TB HDD volume
+# 6. Pull media assets from the 1TB HDD volume
 if os.path.exists(assets_src):
     print(f"\n📦 Copying production media assets from HDD vault ({assets_src})...")
     shutil.copytree(assets_src, assets_dst)
