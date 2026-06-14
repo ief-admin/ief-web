@@ -117,10 +117,11 @@ with open(os.path.join(build_dir, "index.html"), "w", encoding="utf-8") as f:
 if os.path.exists(assets_src):
     print(f"\n📦 Copying production media assets from HDD vault ({assets_src})...")
     shutil.copytree(assets_src, assets_dst)
-    print(f"✅ Successfully compiled {len(os.listdir(assets_dst))} media assets into build folder.")
+    print(f"✅ Successfully compiled {len(os.listdir(assets_dst))} media assets.")
 else:
-    print(f"\n❌ CRITICAL ERROR: Media directory not found at {assets_src}!")
-    os.makedirs(assets_dst, exist_ok=True)
+    print(f"\n⚠️  Media directory not found at {assets_src}")
+    print(f"   Skipping assets — existing Cloudflare CDN assets will be preserved.")
+    print(f"   (Run deploy.sh locally to do a full asset deploy)")
 
 print(f"\n🎉 Build Complete! Clean production distribution compiled at: {build_dir}")
 
