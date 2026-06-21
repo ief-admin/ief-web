@@ -6,7 +6,7 @@ import shutil
 # Explicit paths mapping across your NVMe SSD and 1TB HDD storage
 source_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(os.path.dirname(source_dir), "dist")
-assets_src = "/mnt/data/web/ief-media"  # Points directly to your HDD media vault
+assets_src = os.path.join(source_dir, "assets")  # In-repo media (committed to git); Cloudflare R2 planned for a later release
 assets_dst = os.path.join(build_dir, "assets")
 
 # Ensure the workspace directory exists
