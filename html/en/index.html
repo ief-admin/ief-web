@@ -27,22 +27,22 @@
     showDonate: false,
     lang: 'en',
 
-    activePhoto: { type: 'image', url: '/assets/picture-00.webp', title: 'ThaiThamizh Students' },
+    activePhoto: { type: 'image', url: '/assets/picture-00.webp' },
     activeVideo: { type: 'video', url: 'QwRz5runoVY', title: 'In Tamilnadu Assembly' },
 
     photoItems: [
-        { type: 'image', url: '/assets/picture-00.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-01.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-02.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-03.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-04.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-05.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-06.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-07.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-08.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-09.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-10.webp', title: 'ThaiThamizh Students' },
-        { type: 'image', url: '/assets/picture-11.webp', title: 'ThaiThamizh Students' }
+        { type: 'image', url: '/assets/picture-00.webp' },
+        { type: 'image', url: '/assets/picture-01.webp' },
+        { type: 'image', url: '/assets/picture-02.webp' },
+        { type: 'image', url: '/assets/picture-03.webp' },
+        { type: 'image', url: '/assets/picture-04.webp' },
+        { type: 'image', url: '/assets/picture-05.webp' },
+        { type: 'image', url: '/assets/picture-06.webp' },
+        { type: 'image', url: '/assets/picture-07.webp' },
+        { type: 'image', url: '/assets/picture-08.webp' },
+        { type: 'image', url: '/assets/picture-09.webp' },
+        { type: 'image', url: '/assets/picture-10.webp' },
+        { type: 'image', url: '/assets/picture-11.webp' }
     ],
     videoItems: [
         { type: 'video', url: 'pU6eEHzCSjE',   title: 'ThaiThamizh Palli, Kundrathur' },
@@ -198,7 +198,7 @@
 
             <div class="flex gap-4 h-[320px] md:h-[380px]">
                 <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
-                    <img :src="activePhoto.url" class="w-full h-full object-cover transition-all duration-500" :alt="activePhoto.title">
+                    <img :src="activePhoto.url" class="w-full h-full object-cover transition-all duration-500" alt="IEF community photo">
                 </div>
                 <div x-ref="photoReel"
                      class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
@@ -206,12 +206,11 @@
                         <button type="button" @click="activePhoto = item"
                                 class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 :class="activePhoto.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
-                            <img :src="item.url" class="w-full h-full object-cover" :alt="item.title" loading="lazy">
+                            <img :src="item.url" class="w-full h-full object-cover" alt="IEF community photo" loading="lazy">
                         </button>
                     </template>
                 </div>
             </div>
-            <p class="mt-3 text-sm text-slate-400 font-medium" x-text="activePhoto.title"></p>
         </div>
 
         <!-- ── VIDEOS sub-section ── -->

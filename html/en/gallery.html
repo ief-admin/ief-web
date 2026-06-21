@@ -10,16 +10,12 @@
         [x-cloak] { display: none !important; }
         .hero-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
 
-        /* Lightbox transition */
-        [x-show="lightbox"] { transition: opacity 0.2s ease; }
-
-        /* Gallery grid hover */
-        .photo-card img { transition: transform 0.4s ease; }
-        .photo-card:hover img { transform: scale(1.05); }
-
-        /* Video card */
-        .video-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .video-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+        /* Gallery reel scrollbar */
+        .gallery-reel::-webkit-scrollbar { width: 4px; height: 4px; }
+        .gallery-reel::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); border-radius: 999px; }
+        .gallery-reel::-webkit-scrollbar-thumb { background: rgba(96,165,250,0.55); border-radius: 999px; }
+        .gallery-reel::-webkit-scrollbar-thumb:hover { background: rgba(96,165,250,0.85); }
+        .gallery-reel { scrollbar-width: thin; scrollbar-color: rgba(96,165,250,0.55) rgba(255,255,255,0.08); }
     </style>
 </head>
 
@@ -27,45 +23,50 @@
     showDonate: false,
     lang: 'en',
 
-    lightbox: false,
-    lightboxImg: '',
-    lightboxTitle: '',
-
-    activeVideo: { url: 'QwRz5runoVY', title: 'In Tamilnadu Assembly' },
+    activePhoto: { url: '/assets/picture-00.webp' },
+    activeVideo: { url: 'QwRz5runoVY' },
 
     photoItems: [
-        { url: '/assets/picture-00.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-01.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-02.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-03.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-04.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-05.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-06.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-07.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-08.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-09.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-10.webp', title: 'ThaiThamizh Students' },
-        { url: '/assets/picture-11.webp', title: 'ThaiThamizh Students' }
+        { url: '/assets/picture-00.webp' },
+        { url: '/assets/picture-01.webp' },
+        { url: '/assets/picture-02.webp' },
+        { url: '/assets/picture-03.webp' },
+        { url: '/assets/picture-04.webp' },
+        { url: '/assets/picture-05.webp' },
+        { url: '/assets/picture-06.webp' },
+        { url: '/assets/picture-07.webp' },
+        { url: '/assets/picture-08.webp' },
+        { url: '/assets/picture-09.webp' },
+        { url: '/assets/picture-10.webp' },
+        { url: '/assets/picture-11.webp' }
     ],
     videoItems: [
-        { url: 'QwRz5runoVY',  title: 'In Tamilnadu Assembly' },
-        { url: 'pU6eEHzCSjE',  title: 'ThaiThamizh Palli, Kundrathur' },
-        { url: 'QpQJJkkYC5Y',  title: 'ThaiThamizh Palli, Tiruppur' },
-        { url: 'SE1JnmZYP-w',  title: 'ThaiThamizh Palli, Kobi' },
-        { url: 'p641bcXTFN0',  title: 'ThaiThamizh Palli Students Performance' }
+        { url: 'QwRz5runoVY' },
+        { url: 'pU6eEHzCSjE' },
+        { url: 'QpQJJkkYC5Y' },
+        { url: 'SE1JnmZYP-w' },
+        { url: 'p641bcXTFN0' }
     ],
 
-    openLightbox(item) {
-        this.lightboxImg = item.url;
-        this.lightboxTitle = item.title;
-        this.lightbox = true;
-        document.body.style.overflow = 'hidden';
-    },
-    closeLightbox() {
-        this.lightbox = false;
-        document.body.style.overflow = '';
+    initGallery() {
+        this.activePhoto = this.photoItems[0];
+        this.activeVideo = this.videoItems[0];
+
+        const photoReel = this.$refs.photoReel;
+        if (photoReel) {
+            let paused = false;
+            photoReel.addEventListener('mouseenter', () => paused = true);
+            photoReel.addEventListener('mouseleave', () => paused = false);
+            setInterval(() => {
+                if (paused || !photoReel.children.length) return;
+                const maxScroll = photoReel.scrollHeight - photoReel.clientHeight;
+                if (maxScroll <= 0) return;
+                const next = photoReel.scrollTop + 120;
+                photoReel.scrollTo({ top: next >= maxScroll - 4 ? 0 : next, behavior: 'smooth' });
+            }, 3500);
+        }
     }
-}">
+}" x-init="initGallery()">
 
 <!--#include virtual="/parts/nav-en.html" -->
 
@@ -80,110 +81,77 @@
     </div>
 </section>
 
-<!-- ── PHOTOS SECTION ── -->
-<section id="photos" class="py-16 px-6">
-    <div class="max-w-6xl mx-auto">
+<!-- GALLERY — Photos and Videos reels (full archive) -->
+<section class="py-16 bg-slate-950 text-white">
+    <div class="max-w-6xl mx-auto px-6">
 
-        <div class="flex items-center gap-3 mb-8">
-            <svg class="w-6 h-6 text-blue-400 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <h2 class="text-2xl font-bold text-white">Photos</h2>
-            <span class="text-sm text-slate-500 font-medium">(<span x-text="photoItems.length"></span> photos)</span>
-        </div>
+        <!-- ── PHOTOS sub-section ── -->
+        <div class="mb-14">
+            <div class="flex items-center gap-3 mb-4">
+                <svg class="w-6 h-6 text-blue-400 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <h2 class="text-2xl font-bold text-white tracking-wide">Photos</h2>
+                <span class="text-sm text-slate-500 font-medium">(<span x-text="photoItems.length"></span> photos)</span>
+            </div>
 
-        <!-- Responsive photo grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            <template x-for="(item, idx) in photoItems" :key="item.url">
-                <!-- Make first photo span 2 cols/rows for visual interest -->
-                <div class="photo-card rounded-xl overflow-hidden cursor-pointer bg-slate-900 border border-white/5 hover:border-blue-500/50 transition-all duration-300"
-                     :class="idx === 0 ? 'col-span-2 row-span-2' : ''"
-                     @click="openLightbox(item)">
-                    <div class="relative w-full h-full" :class="idx === 0 ? 'aspect-square' : 'aspect-video'">
-                        <img :src="item.url" :alt="item.title"
-                             class="w-full h-full object-cover" loading="lazy">
-                        <!-- Hover overlay -->
-                        <div class="absolute inset-0 bg-blue-900/0 hover:bg-blue-900/30 transition-colors duration-300 flex items-end p-3 opacity-0 hover:opacity-100">
-                            <span class="text-xs text-white font-semibold bg-black/50 px-2 py-1 rounded-full" x-text="item.title"></span>
-                        </div>
-                    </div>
+            <div class="flex gap-4 h-[360px] md:h-[480px]">
+                <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
+                    <img :src="activePhoto.url" class="w-full h-full object-cover transition-all duration-500" alt="IEF community photo">
                 </div>
-            </template>
+                <div x-ref="photoReel"
+                     class="gallery-reel w-[120px] md:w-[150px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
+                    <template x-for="item in photoItems" :key="item.url">
+                        <button type="button" @click="activePhoto = item"
+                                class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                :class="activePhoto.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
+                            <img :src="item.url" class="w-full h-full object-cover" alt="IEF community photo" loading="lazy">
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── VIDEOS sub-section ── -->
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <svg class="w-6 h-6 text-blue-400 flex-none" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                </svg>
+                <h2 class="text-2xl font-bold text-white tracking-wide">Videos</h2>
+                <span class="text-sm text-slate-500 font-medium">(<span x-text="videoItems.length"></span> videos)</span>
+            </div>
+
+            <div class="flex gap-4 h-[360px] md:h-[480px]">
+                <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
+                    <iframe class="w-full h-full"
+                        :src="'https://www.youtube-nocookie.com/embed/' + activeVideo.url + '?rel=0&modestbranding=1'"
+                        title="IEF community video"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="gallery-reel w-[120px] md:w-[150px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
+                    <template x-for="item in videoItems" :key="item.url">
+                        <button type="button" @click="activeVideo = item"
+                                class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
+                                :class="activeVideo.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
+                            <img :src="'https://img.youtube.com/vi/' + item.url + '/mqdefault.jpg'"
+                                 class="w-full h-full object-cover" alt="IEF community video" loading="lazy">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <svg class="w-7 h-7 text-white drop-shadow" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
+                                </svg>
+                            </div>
+                        </button>
+                    </template>
+                </div>
+            </div>
         </div>
 
     </div>
 </section>
-
-<!-- ── VIDEOS SECTION ── -->
-<section id="videos" class="py-16 px-6 bg-slate-900/50">
-    <div class="max-w-6xl mx-auto">
-
-        <div class="flex items-center gap-3 mb-8">
-            <svg class="w-6 h-6 text-blue-400 flex-none" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
-            </svg>
-            <h2 class="text-2xl font-bold text-white">Videos</h2>
-            <span class="text-sm text-slate-500 font-medium">(<span x-text="videoItems.length"></span> videos)</span>
-        </div>
-
-        <!-- Featured video player -->
-        <div class="mb-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 aspect-video max-w-3xl mx-auto">
-            <iframe class="w-full h-full"
-                :src="'https://www.youtube-nocookie.com/embed/' + activeVideo.url + '?rel=0&modestbranding=1'"
-                :title="activeVideo.title"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
-        </div>
-        <p class="text-center text-slate-300 font-semibold mb-10 text-lg" x-text="activeVideo.title"></p>
-
-        <!-- Video thumbnail grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
-            <template x-for="item in videoItems" :key="item.url">
-                <button type="button"
-                        @click="activeVideo = item"
-                        class="video-card rounded-xl overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
-                        :class="activeVideo.url === item.url ? 'border-blue-500' : 'border-white/10 hover:border-blue-500/50'">
-                    <div class="aspect-video relative">
-                        <img :src="'https://img.youtube.com/vi/' + item.url + '/mqdefault.jpg'"
-                             class="w-full h-full object-cover" :alt="item.title" loading="lazy">
-                        <div class="absolute inset-0 flex items-center justify-center"
-                             :class="activeVideo.url === item.url ? 'bg-blue-600/30' : 'bg-black/30'">
-                            <svg class="w-8 h-8 text-white drop-shadow" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="p-2 bg-slate-900">
-                        <p class="text-xs text-slate-300 font-medium leading-snug line-clamp-2 text-left" x-text="item.title"></p>
-                    </div>
-                </button>
-            </template>
-        </div>
-
-    </div>
-</section>
-
-<!-- ── LIGHTBOX ── -->
-<div x-show="lightbox"
-     x-cloak
-     class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-     @keydown.escape.window="closeLightbox()"
-     @click.self="closeLightbox()">
-    <div class="relative max-w-4xl w-full">
-        <button @click="closeLightbox()"
-                class="absolute -top-10 right-0 text-white/70 hover:text-white transition text-sm font-bold flex items-center gap-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-            Close
-        </button>
-        <img :src="lightboxImg" :alt="lightboxTitle"
-             class="w-full max-h-[80vh] object-contain rounded-xl shadow-2xl">
-        <p class="text-center text-slate-300 text-sm font-medium mt-3" x-text="lightboxTitle"></p>
-    </div>
-</div>
 
 <!-- Back to Home -->
 <section class="py-10 px-6 text-center bg-slate-950">
@@ -200,4 +168,3 @@
 
 </body>
 </html>
-
