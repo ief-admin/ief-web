@@ -241,3 +241,6 @@ ts-state/
 # VSCode workspace settings
 *.code-workspace
 
+# Claude Cowork files
+IEF-HANDOFF.md
+PROJECT-STATE.md

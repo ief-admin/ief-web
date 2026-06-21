@@ -5,24 +5,38 @@
             <span class="text-sm md:text-base font-bold tracking-tight text-blue-900">தாய்மொழியில் கல்வி</span>
         </a>
 
-        <div class="hidden md:flex items-center gap-8" x-data="{ activeSection: window.location.hash || '#home' }">
+        <div class="hidden md:flex items-center gap-8" x-data="{
+            activeSection: '#home',
+            init() {
+                if (window.location.pathname.includes('gallery')) {
+                    this.activeSection = '#gallery';
+                    return;
+                }
+                const map = { branding: '#home', stats: '#home', mission: '#mission', gallery: '#gallery', contact: '#contact' };
+                const targets = Object.keys(map)
+                    .map(id => document.getElementById(id))
+                    .filter(Boolean);
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) this.activeSection = map[e.target.id];
+                    });
+                }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+                targets.forEach(t => observer.observe(t));
+            }
+        }">
             <a href="/ta/index.html"
-               @click="activeSection = '#home'"
-               :class="(activeSection === '#home' || activeSection === '') ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
+               :class="activeSection === '#home' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
                class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">முகப்பு</a>
 
             <a href="/ta/index.html#mission"
-               @click="activeSection = '#mission'"
                :class="activeSection === '#mission' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
                class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">எங்கள் இலக்கு</a>
 
-            <a href="/ta/index.html#gallery"
-               @click="activeSection = '#gallery'"
+            <a href="/ta/gallery.html"
                :class="activeSection === '#gallery' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
                class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">படங்கள்</a>
 
             <a href="/ta/index.html#contact"
-               @click="activeSection = '#contact'"
                :class="activeSection === '#contact' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600'"
                class="text-sm font-bold hover:text-blue-600 border-b-2 pb-1 transition-colors duration-200">தொடர்புக்கு</a>
         </div>
@@ -35,4 +49,3 @@
         </div>
     </div>
 </nav>
-

@@ -1,0 +1,31 @@
+# Normalize line endings so diffs are deterministic regardless of where the edit
+# came from (Cowork sandbox, Windows laptop, or minnaham).
+# Git stores text as LF; working copies are checked out per-platform.
+
+* text=auto
+
+# Force LF for files that must be LF to run correctly
+*.sh   text eol=lf
+*.py   text eol=lf
+
+# Explicit text types (web sources)
+*.html text
+*.css  text
+*.js   text
+*.json text
+*.md   text
+*.yml  text
+*.yaml text
+*.toml text
+*.svg  text
+
+# Binary assets — never touch line endings
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
