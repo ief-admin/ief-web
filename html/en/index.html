@@ -33,41 +33,49 @@
     photoItems: [
         { type: 'image', url: '/assets/picture-00.webp' },
         { type: 'image', url: '/assets/picture-01.webp' },
-        { type: 'image', url: '/assets/picture-02.webp' },
-        { type: 'image', url: '/assets/picture-03.webp' },
         { type: 'image', url: '/assets/picture-04.webp' },
         { type: 'image', url: '/assets/picture-05.webp' },
-        { type: 'image', url: '/assets/picture-06.webp' },
-        { type: 'image', url: '/assets/picture-07.webp' },
-        { type: 'image', url: '/assets/picture-08.webp' },
-        { type: 'image', url: '/assets/picture-09.webp' },
-        { type: 'image', url: '/assets/picture-10.webp' },
-        { type: 'image', url: '/assets/picture-11.webp' }
+        { type: 'image', url: '/assets/picture-06.webp' }
     ],
     videoItems: [
         { type: 'video', url: 'pU6eEHzCSjE',   title: 'ThaiThamizh Palli, Kundrathur' },
         { type: 'video', url: 'QwRz5runoVY',   title: 'In Tamilnadu Assembly' },
         { type: 'video', url: 'p641bcXTFN0',   title: 'ThaiThamizh Palli Students Performance' },
-        { type: 'video', url: 'SE1JnmZYP-w',   title: 'ThaiThamizh Palli, Kobi' }
+        { type: 'video', url: 's2zwLFiwYPU',   title: 'ThaiThamizh Palli, Thiruppur' }
     ],
 
+    photoIndex: 0,
+    videoIndex: 0,
+    photoPaused: false,
+    videoPaused: false,
+
+    scrollReelTo(refName, idx) {
+        const reel = this.$refs[refName];
+        if (!reel) return;
+        const child = reel.children[idx];
+        if (!child) return;
+        reel.scrollTo({ top: child.offsetTop - reel.offsetTop, behavior: 'smooth' });
+    },
+
     initGallery() {
+        this.photoIndex = 0;
+        this.videoIndex = 0;
         this.activePhoto = this.photoItems[0];
         this.activeVideo = this.videoItems[0];
 
-        const photoReel = this.$refs.photoReel;
-        if (photoReel) {
-            let paused = false;
-            photoReel.addEventListener('mouseenter', () => paused = true);
-            photoReel.addEventListener('mouseleave', () => paused = false);
-            setInterval(() => {
-                if (paused || !photoReel.children.length) return;
-                const maxScroll = photoReel.scrollHeight - photoReel.clientHeight;
-                if (maxScroll <= 0) return;
-                const next = photoReel.scrollTop + 120;
-                photoReel.scrollTo({ top: next >= maxScroll - 4 ? 0 : next, behavior: 'smooth' });
-            }, 3500);
-        }
+        setInterval(() => {
+            if (this.photoPaused || this.photoItems.length < 2) return;
+            this.photoIndex = (this.photoIndex + 1) % this.photoItems.length;
+            this.activePhoto = this.photoItems[this.photoIndex];
+            this.scrollReelTo('photoReel', this.photoIndex);
+        }, 3500);
+
+        setInterval(() => {
+            if (this.videoPaused || this.videoItems.length < 2) return;
+            this.videoIndex = (this.videoIndex + 1) % this.videoItems.length;
+            this.activeVideo = this.videoItems[this.videoIndex];
+            this.scrollReelTo('videoReel', this.videoIndex);
+        }, 6000);
     }
 }" x-init="initGallery()">
 
@@ -196,14 +204,14 @@
                 <span class="text-xs text-slate-500 font-medium">(<span x-text="photoItems.length"></span> photos)</span>
             </div>
 
-            <div class="flex gap-4 h-[320px] md:h-[380px]">
+            <div class="flex gap-4 h-[320px] md:h-[380px]" @mouseenter="photoPaused = true" @mouseleave="photoPaused = false">
                 <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
                     <img :src="activePhoto.url" class="w-full h-full object-cover transition-all duration-500" alt="IEF community photo">
                 </div>
                 <div x-ref="photoReel"
                      class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
                     <template x-for="item in photoItems" :key="item.url">
-                        <button type="button" @click="activePhoto = item"
+                        <button type="button" @click="photoIndex = photoItems.indexOf(item); activePhoto = item"
                                 class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 :class="activePhoto.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
                             <img :src="item.url" class="w-full h-full object-cover" alt="IEF community photo" loading="lazy">
@@ -223,7 +231,7 @@
                 <span class="text-xs text-slate-500 font-medium">(<span x-text="videoItems.length"></span> videos)</span>
             </div>
 
-            <div class="flex gap-4 h-[320px] md:h-[380px]">
+            <div class="flex gap-4 h-[320px] md:h-[380px]" @mouseenter="videoPaused = true" @mouseleave="videoPaused = false">
                 <div class="flex-1 min-w-0 rounded-2xl overflow-hidden bg-black shadow-xl border border-white/10">
                     <iframe class="w-full h-full"
                         :src="'https://www.youtube-nocookie.com/embed/' + activeVideo.url + '?rel=0&modestbranding=1'"
@@ -232,9 +240,9 @@
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
                 </div>
-                <div class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
+                <div x-ref="videoReel" class="gallery-reel w-[110px] md:w-[140px] flex-none flex flex-col overflow-y-auto gap-2 pr-1 snap-y snap-mandatory cursor-grab active:cursor-grabbing">
                     <template x-for="item in videoItems" :key="item.url">
-                        <button type="button" @click="activeVideo = item"
+                        <button type="button" @click="videoIndex = videoItems.indexOf(item); activeVideo = item"
                                 class="flex-none w-full aspect-video rounded-xl overflow-hidden border-2 transition-all snap-start focus:outline-none focus:ring-2 focus:ring-blue-500 relative"
                                 :class="activeVideo.url === item.url ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'">
                             <img :src="'https://img.youtube.com/vi/' + item.url + '/mqdefault.jpg'"
