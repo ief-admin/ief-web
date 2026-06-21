@@ -24,20 +24,12 @@ jobs:
           python-version: '3.11'
 
       # ── 3. Build — compile SSI includes into dist/ ────────────────────────
-      # Note: media assets live on your local HDD (/mnt/data/web/ief-media)
-      # and are NOT in the git repo. The build step below handles this by
-      # creating an empty assets/ dir so the deploy doesn't fail.
-      # You must separately ensure assets are available — see note below.
+      # Media lives in the repo at html/assets/ (committed to git), so
+      # compile_site.py copies it into dist/assets and CI deploys the full
+      # site (HTML + media) to both preview and production.
       - name: Build static site
         run: python3 html/compile_site.py
-        # NOTE: /mnt/data/web/ief-media is not available in CI.
-        # compile_site.py skips assets gracefully when source dir is missing.
-        # Assets already deployed to Cloudflare CDN are preserved between deploys.
-        # To update assets, run ./deploy.sh locally on minnaham (has /mnt/data access).
         env:
-          # compile_site.py copies from /mnt/data/web/ief-media which doesn't
-          # exist in CI — the script prints a warning but continues.
-          # Assets are handled in the next step.
           CI: true
 
       # ── 4. Deploy to Cloudflare Pages ────────────────────────────────────

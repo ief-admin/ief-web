@@ -7,9 +7,10 @@ How code moves from an edit to the live site, in the Cowork-based setup.
 The laptop folder `E:\COWORK\PROJECTS\IEF-WEB` is the single source of truth. It is a
 git clone of `ief-admin/ief-web`. Cowork edits files here; you commit and push from here.
 
-`minnaham` is no longer the place to edit. It is now used only for media (full asset)
-deploys. Don't edit code on `minnaham` — let it pull. Editing in two places is the one
-thing that breaks this model.
+`minnaham` is out of the loop. With media now committed to the repo, there's no Linux
+dependency: one Windows box edits, commits, and pushes; GitHub Actions builds and deploys
+to Cloudflare. Don't edit code on `minnaham`. Editing in two places is the one thing that
+breaks this model.
 
 ## Branches
 
@@ -35,9 +36,10 @@ Work on `develop`. Promote to `main` only after the preview looks right.
 
 ## Media (images / assets)
 
-Media is not in the repo. CI deploys HTML only; existing Cloudflare CDN assets are
-preserved. When assets change, run `./deploy.sh` on `minnaham` (it has the
-`/mnt/data/web/ief-media` vault and does a full build + deploy via Wrangler).
+Media lives in the repo at `html/assets/` and is committed to git. `compile_site.py`
+copies it into `dist/assets/`, so CI deploys the full site (HTML + images) to both preview
+and production. No separate media deploy, no minnaham. If the image set grows large later,
+the plan is to move media to Cloudflare R2 and out of git.
 
 ## What Cowork can and can't do
 
