@@ -15,7 +15,7 @@ step beyond a small Python compiler. Pages are authored as HTML with SSI-style
 | Markup | HTML5 with SSI includes (compiled by `compile_site.py`) |
 | Styling | Tailwind CSS (CDN, no build) |
 | Interactivity | Alpine.js (CDN) |
-| Tamil font | IBM Plex Sans Tamil (Google Fonts) |
+| Fonts | Noto Sans (Latin) + Noto Sans Tamil (Tamil), Google Fonts — one shared `body` stack across `en/` and `ta/` |
 | Build | `html/compile_site.py` (Python 3) |
 | Hosting | Cloudflare Pages |
 
