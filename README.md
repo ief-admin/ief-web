@@ -4,6 +4,8 @@ Official website for the **International Educational Foundation (IEF)**, a 501(c
 
 🌐 **Live site:** [https://ief-global.org](https://ief-global.org)
 
+> 📖 இந்த ஆவணம் தமிழிலும் கிடைக்கிறது — [README-ta.md](README-ta.md) (Tamil version).
+
 ---
 
 ## Tech Stack
@@ -13,8 +15,9 @@ Official website for the **International Educational Foundation (IEF)**, a 501(c
 | Markup | HTML5 with SSI-style includes (compiled) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) (CDN) |
 | Interactivity | [Alpine.js](https://alpinejs.dev/) (CDN) |
-| Tamil Font | [IBM Plex Sans Tamil](https://fonts.google.com/specimen/IBM+Plex+Sans+Tamil) (Google Fonts) |
-| Build | Python compile script (`compile_site.py`) |
+| Fonts | [Noto Sans](https://fonts.google.com/noto/specimen/Noto+Sans) (Latin) + [Noto Sans Tamil](https://fonts.google.com/noto/specimen/Noto+Sans+Tamil) (Tamil) — Google Fonts |
+| Build | Python compile script (`html/compile_site.py`) |
+| CI/CD | [GitHub Actions](https://github.com/features/actions) (`.github/workflows/deploy.yml`) |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com/) |
 | DNS | Cloudflare |
 
@@ -22,32 +25,45 @@ Official website for the **International Educational Foundation (IEF)**, a 501(c
 
 ## Repository Structure
 
+All site source lives under `html/`. The build script wipes and regenerates `dist/`
+(generated output — gitignored, never edited by hand).
+
 ```
 ief-web/
-├── assets/                  # Static assets (images, logos, QR codes)
-│   ├── logo.webp
-│   ├── hero-bg.webp
-│   ├── picture-00.webp      # Community photos (picture-00 through picture-11)
-│   ├── ...
-│   ├── headshot-sm.webp     # Board member headshots
-│   └── zelle-qr.webp        # Donation QR code
+├── html/                    # ← SITE SOURCE (edit everything here)
+│   ├── assets/              # Static assets (images, logos, QR codes), committed to git
+│   │   ├── logo.webp
+│   │   ├── hero-bg.webp
+│   │   ├── picture-00.webp  # Community photos (picture-00 through picture-11)
+│   │   ├── ...
+│   │   ├── headshot-sm.webp # Board member headshots
+│   │   └── zelle-qr.webp    # Donation QR code
+│   │
+│   ├── parts/               # Shared HTML components (SSI includes)
+│   │   ├── nav-en.html      # English navigation bar
+│   │   ├── nav-ta.html      # Tamil navigation bar
+│   │   ├── donate-modal.html# Donation modal (Stripe + Zelle)
+│   │   ├── footer-en.html   # English footer
+│   │   └── footer-ta.html   # Tamil footer
+│   │
+│   ├── en/                  # English pages
+│   │   ├── index.html
+│   │   └── gallery.html
+│   │
+│   ├── ta/                  # Tamil pages
+│   │   ├── index.html
+│   │   └── gallery.html
+│   │
+│   ├── index.html           # Root language-redirect (→ /en or /ta)
+│   └── compile_site.py      # SSI include compiler / build script
 │
-├── parts/                   # Shared HTML components (SSI includes)
-│   ├── nav-en.html          # English navigation bar
-│   ├── nav-ta.html          # Tamil navigation bar
-│   ├── donate-modal.html    # Donation modal (Stripe + Zelle)
-│   └── footer.html          # Site-wide footer
-│
-├── en/                      # English pages
-│   ├── index.html
-│   └── gallery.html
-│
-├── ta/                      # Tamil pages
-│   ├── index.html
-│   └── gallery.html
-│
-├── compile_site.py               # SSI include compiler / build script
-├── wrangler.toml            # Cloudflare Wrangler configuration
+├── dist/                    # GENERATED OUTPUT — gitignored, do not edit
+├── .github/workflows/
+│   └── deploy.yml           # GitHub Actions CI (build + deploy)
+├── deploy.sh                # Manual local build/deploy helper
+├── docker-compose.yml       # Optional nginx SSI dev preview (+ Tailscale sidecar)
+├── nginx.conf
+├── wrangler.toml            # Cloudflare Pages configuration
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -66,7 +82,7 @@ The site is fully bilingual. Every page exists in two versions:
 
 - Shared components (nav, footer, donate modal) live in `/parts/` and are compiled into each page at build time.
 - The donate modal uses Alpine.js `lang` state (`'en'` or `'ta'`) to switch label text dynamically at runtime.
-- The Tamil version uses the **IBM Plex Sans Tamil** font for correct rendering.
+- Both language versions share one font stack — `'Noto Sans', 'Noto Sans Tamil', sans-serif` — so Latin text renders in **Noto Sans** and Tamil text in **Noto Sans Tamil**, two sibling families that harmonize by design. The rule lives on `body` in each page's `<style>` block, so sizing can be tuned in a single place.
 
 ---
 
@@ -84,42 +100,52 @@ The site is fully bilingual. Every page exists in two versions:
 git clone https://github.com/ief-admin/ief-web.git
 cd ief-web
 
-# Run the SSI compile step to resolve <!--#include virtual="..."--> directives
-python compile_site.py
+# Run the SSI compile step to resolve <!--#include virtual="..."--> directives.
+# This wipes and regenerates dist/ and copies html/assets/ into dist/assets/.
+# On Windows, use `python` if `python3` is not on PATH.
+python3 html/compile_site.py
 
-# Serve the output locally
-python -m http.server 8080
+# Serve the compiled output locally
+cd dist && python -m http.server 8080
 # Then open http://localhost:8080/en/ in your browser
 ```
 
-> **Note:** The raw source files use `<!--#include virtual="...">` directives for shared components. These are **not** processed by browsers directly — always run `compile_site.py` first to produce the final HTML before previewing or deploying.
+> **Note:** The raw source files use `<!--#include virtual="...">` directives for shared components. These are **not** processed by browsers directly — always run `html/compile_site.py` first to produce the final HTML before previewing or deploying.
 
 ---
 
 ## Build & Deployment
 
-The site is deployed via **Cloudflare Pages**, connected directly to this GitHub repository.
+Deployment is handled by **GitHub Actions** (`.github/workflows/deploy.yml`), which builds
+the site with `python3 html/compile_site.py` and deploys the resulting `dist/` to
+**Cloudflare Pages**. Both the integration and production branches deploy automatically:
 
-| Setting | Value |
+| Branch | Deploys to | URL |
+|---|---|---|
+| `develop` | Cloudflare **Preview** | `https://develop.ief-site.pages.dev` |
+| `main` | Cloudflare **Production** | `https://ief-global.org` |
+
+| CI Setting | Value |
 |---|---|
-| Build command | `python compile_site.py` |
-| Output directory | `dist/` *(or as configured in compile_site.py)* |
-| Production branch | `main` |
-| Node version | N/A (Python only) |
+| Trigger | Push to `develop` or `main` (plus manual `workflow_dispatch`) |
+| Build command | `python3 html/compile_site.py` |
+| Output directory | `dist/` |
+| Cloudflare project | `ief-site` |
+| Auth | `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` (GitHub Actions secrets) |
 
-Every push to `main` triggers an automatic build and deployment on Cloudflare Pages. Pull requests generate isolated preview deployments with a unique URL for review before merging.
+Work on `develop`, validate the change on the preview URL, then merge `develop` into `main`
+to promote it to production. See [WORKFLOW.md](WORKFLOW.md) for the full edit → commit →
+deploy loop.
 
-### Manual deploy (Wrangler CLI)
+### Manual deploy (local)
+
+For an out-of-band deploy, use the `deploy.sh` helper. It needs a local `.env` with
+`CLOUDFLARE_*` credentials (gitignored). Cloudflare auth is an **API token**, not OAuth.
 
 ```bash
-# Install Wrangler if not already installed
-npm install -g wrangler
-
-# Authenticate
-wrangler login
-
-# Deploy
-wrangler pages deploy dist/
+./deploy.sh           # build + deploy
+./deploy.sh --build   # build only (regenerate dist/)
+./deploy.sh --deploy  # deploy the existing dist/ without rebuilding
 ```
 
 ---
@@ -130,8 +156,8 @@ wrangler pages deploy dist/
 
 1. Convert your image to `.webp` format (use [Squoosh](https://squoosh.app/) or `cwebp` CLI for best results).
 2. Name it sequentially: `picture-12.webp`, `picture-13.webp`, etc.
-3. Place it in `/assets/`.
-4. Add an entry to the `photoItems` array in **both** `en/gallery.html` and `ta/gallery.html`:
+3. Place it in `html/assets/` (committed to git).
+4. Add an entry to the `photoItems` array in **both** `html/en/gallery.html` and `html/ta/gallery.html`:
 
 ```js
 // en/gallery.html
@@ -141,7 +167,7 @@ wrangler pages deploy dist/
 { url: '/assets/picture-12.webp', title: 'உங்கள் தமிழ் தலைப்பு' }
 ```
 
-5. If the photo should also appear on the home page, add it to `photoItems` in `en/index.html` and `ta/index.html` as well.
+5. If the photo should also appear on the home page, add it to `photoItems` in `html/en/index.html` and `html/ta/index.html` as well.
 
 ### Adding a new video
 
@@ -171,13 +197,15 @@ Contributors are managed via GitHub repository access. Contact the repository ad
 ### Branching convention
 
 ```
-main          ← production (auto-deploys to ief-global.org)
-dev           ← integration branch for ongoing work
+main           ← production (auto-deploys to ief-global.org)
+develop        ← integration branch (auto-deploys to the preview URL)
 feature/<name> ← individual feature branches
-fix/<name>    ← bug fix branches
+fix/<name>     ← bug fix branches
 ```
 
-Always open a **Pull Request** into `main` and get at least one review before merging.
+Do day-to-day work on `develop` and validate on the preview URL. Promote to production by
+merging `develop` into `main` (open a **Pull Request** and get at least one review) only
+after the preview looks right.
 
 ---
 

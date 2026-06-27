@@ -95,11 +95,26 @@ ta_gallery_html = process_file(os.path.join(source_dir, "ta", "gallery.html"))
 with open(os.path.join(build_dir, "ta", "gallery.html"), "w", encoding="utf-8") as f:
     f.write(ta_gallery_html)
 
+# 4b. Compile legal pages (Privacy Policy + Terms of Service) for both languages.
+#     Same English legal text in en/ and ta/; the ta/ versions carry Tamil chrome.
+legal_pages = [
+    ("en", "privacy.html"),
+    ("en", "terms.html"),
+    ("ta", "privacy.html"),
+    ("ta", "terms.html"),
+]
+for lang_dir, page in legal_pages:
+    print(f"\nCompiling {lang_dir}/{page}...")
+    compiled = process_file(os.path.join(source_dir, lang_dir, page))
+    with open(os.path.join(build_dir, lang_dir, page), "w", encoding="utf-8") as f:
+        f.write(compiled)
+
 # 5. Create Root Redirect File
 root_index_content = """<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="refresh" content="0; url=/en/">
+    <link rel="icon" href="/assets/favicon.ico" sizes="any">
     <script type="text/javascript">
         window.location.href = "/en/"
     </script>
@@ -118,6 +133,11 @@ if os.path.exists(assets_src):
     print(f"\n📦 Copying production media assets from HDD vault ({assets_src})...")
     shutil.copytree(assets_src, assets_dst)
     print(f"✅ Successfully compiled {len(os.listdir(assets_dst))} media assets.")
+    # Also place favicon.ico at the site root so bare /favicon.ico requests resolve.
+    root_favicon = os.path.join(assets_src, "favicon.ico")
+    if os.path.exists(root_favicon):
+        shutil.copy(root_favicon, os.path.join(build_dir, "favicon.ico"))
+        print("✅ Placed favicon.ico at site root.")
 else:
     print(f"\n⚠️  Media directory not found at {assets_src}")
     print(f"   Skipping assets — existing Cloudflare CDN assets will be preserved.")
